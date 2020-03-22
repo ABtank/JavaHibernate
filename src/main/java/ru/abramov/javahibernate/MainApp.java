@@ -11,6 +11,8 @@ public class MainApp {
     public static void main(String[] args) {
         SessionFactory sessionFactory = new Configuration()
                 .addAnnotatedClass(Item.class)
+                .addAnnotatedClass(User.class)
+                .addAnnotatedClass(UserDetails.class)
                 .buildSessionFactory();
 
         Session session = null;
@@ -33,7 +35,20 @@ public class MainApp {
         //===DELETE===
         //deleteFromDb(sessionFactory,session);
 
+        //===ONE-TO-ONE===
+        showOneToOne(sessionFactory,session);
+
         sessionFactory.close();
+    }
+
+    private static void showOneToOne(SessionFactory sessionFactory,Session session) {
+        session= sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        User user =session.get(User.class,1L);
+        System.out.println(user);
+        System.out.println(user.getDetails());
+        System.out.println(user.getDetails().getUser());
+        session.getTransaction().commit();
     }
 
     private static Session getList(SessionFactory sessionFactory, Session session) {
